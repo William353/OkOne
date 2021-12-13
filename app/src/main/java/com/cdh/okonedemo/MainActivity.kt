@@ -262,7 +262,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     companion object {
-        private const val TAG = "MainActivity"
+        private const val TAG = "MainActivityTag"
         private const val URL_FOR_TEST = "https://stackoverflow.com/"
         private const val URL_JUEJIN = "https://juejin.cn/"
         private const val URL_ZHIHU = "https://www.zhihu.com/"

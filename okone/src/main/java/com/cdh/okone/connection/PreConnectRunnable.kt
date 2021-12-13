@@ -32,6 +32,7 @@ class PreConnectRunnable(
         if (LogUtils.isEnabled) d(TAG, "PreConnectRunnable#innerRun() called")
         try {
             val httpUrl = createHttpUrl(mUrl)
+            d("MainActivity", "PreConnectRunnable# url:${httpUrl}")
             if (httpUrl == null) {
                 callConnectFailed(mPreConnectCallback, IllegalArgumentException("unexpected url: $mUrl"))
                 return
