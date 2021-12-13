@@ -13,7 +13,7 @@ import java.io.IOException
  */
 object BuildConnectionProcessor {
 
-    private const val TAG = "BuildConnectionProcesso"
+    private const val TAG = "BuildConnectionProcess"
 
     @JvmField
     val NONE_CALL: Call = object : Call {

@@ -4,24 +4,12 @@ buildscript {
         mavenLocal()
         google()
         mavenCentral()
-        if (Boolean.parseBoolean(LOCAL_DEBUG)) {
-            maven {
-                //本地Maven仓库地址
-                url uri('../repos')
-            }
-        }
-    }
-    dependencies {
-        if (Boolean.parseBoolean(LOCAL_DEBUG)) {
-            classpath 'com.cdh.okone:gradle:local-beta'
-        }
     }
 }
 
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
-apply plugin: 'plugin.cdh.okone'
 
 android {
     compileSdkVersion 29

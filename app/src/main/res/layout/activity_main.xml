@@ -1,38 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="10dp"
     android:orientation="vertical"
+    android:padding="10dp"
     tools:context=".MainActivity">
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="验证OkHttpClient实例收敛："/>
+        android:text="验证OkHttpClient实例收敛：" />
 
     <Button
-        android:id="@+id/btn_build_client_1"
+        android:id="@+id/btn_build_client"
         android:layout_width="match_parent"
         android:layout_height="45dp"
         android:layout_marginTop="5dp"
-        android:textAllCaps="false"
-        android:text="Builder1-请求stackoverflow"/>
+        android:text="请求stackoverflow"
+        android:textAllCaps="false" />
 
-    <Button
-        android:id="@+id/btn_build_client_2"
-        android:layout_width="match_parent"
-        android:layout_height="45dp"
-        android:textAllCaps="false"
-        android:text="Builder2-请求stackoverflow"/>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
-        android:text="验证预建连："/>
+        android:text="验证预建连：" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -45,49 +38,28 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
+            android:text="预建连-stackoverflow"
             android:textAllCaps="false"
-            android:textSize="11dp"
-            android:text="预建连B3-stackoverflow"/>
+            android:textSize="11dp" />
 
         <Button
             android:id="@+id/btn_pre_connect_juejin"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="1"
             android:layout_marginLeft="2dp"
+            android:layout_weight="1"
+            android:text="预建连-juejin"
             android:textAllCaps="false"
-            android:textSize="11dp"
-            android:text="预建连B3-juejin"/>
+            android:textSize="11dp" />
 
         <Button
             android:id="@+id/btn_pre_connect_zhihu"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="1"
             android:layout_marginLeft="2dp"
+            android:layout_weight="1"
+            android:text="预建连-zhihu"
             android:textAllCaps="false"
-            android:textSize="11dp"
-            android:text="预建连B3-zhihu"/>
+            android:textSize="11dp" />
     </LinearLayout>
-
-    <Button
-        android:id="@+id/btn_build_client_3"
-        android:layout_width="match_parent"
-        android:layout_height="45dp"
-        android:textAllCaps="false"
-        android:text="Builder3-请求stackoverflow"/>
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:text="验证优先级："/>
-
-    <Button
-        android:id="@+id/btn_test_priority"
-        android:layout_width="match_parent"
-        android:layout_height="45dp"
-        android:layout_marginTop="5dp"
-        android:textAllCaps="false"
-        android:text="请求优先级"/>
 </LinearLayout>
