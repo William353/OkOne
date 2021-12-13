@@ -57,7 +57,8 @@ task clean(type: Delete) {
 }
 
 ext {
-    okhttpVersion = '4.9.0'
+//    okhttpVersion = '4.9.0'
+    okhttpVersion = '3.12.3'
     okioVersion = '2.8.0'
 
     hamcrestVersion = '1.3'

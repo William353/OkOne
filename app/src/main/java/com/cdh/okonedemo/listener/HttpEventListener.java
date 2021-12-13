@@ -27,20 +27,6 @@ import okhttp3.Response;
 public class HttpEventListener extends EventListener {
     private static final String TAG = "GlobalEventListener";
 
-    @Override
-    public void cacheConditionalHit(@NotNull Call call, @NotNull Response cachedResponse) {
-        Log.d(TAG, "cacheConditionalHit: call = [" + call + "], cachedResponse = [" + cachedResponse + "]");
-    }
-
-    @Override
-    public void cacheHit(@NotNull Call call, @NotNull Response response) {
-        Log.d(TAG, "cacheHit: call = [" + call + "], response = [" + response + "]");
-    }
-
-    @Override
-    public void cacheMiss(@NotNull Call call) {
-        Log.d(TAG, "cacheMiss: call = [" + call + "]");
-    }
 
     @Override
     public void callEnd(@NotNull Call call) {
@@ -57,10 +43,6 @@ public class HttpEventListener extends EventListener {
         Log.d(TAG, "callStart: call = [" + call + "]");
     }
 
-    @Override
-    public void canceled(@NotNull Call call) {
-        Log.d(TAG, "canceled: call = [" + call + "]");
-    }
 
     @Override
     public void connectEnd(@NotNull Call call, @NotNull InetSocketAddress inetSocketAddress, @NotNull Proxy proxy, @Nullable Protocol protocol) {
@@ -98,16 +80,6 @@ public class HttpEventListener extends EventListener {
     }
 
     @Override
-    public void proxySelectEnd(@NotNull Call call, @NotNull HttpUrl url, @NotNull List<Proxy> proxies) {
-        Log.d(TAG, "proxySelectEnd: call = [" + call + "], url = [" + url + "], proxies = [" + proxies + "]");
-    }
-
-    @Override
-    public void proxySelectStart(@NotNull Call call, @NotNull HttpUrl url) {
-        Log.d(TAG, "proxySelectStart: call = [" + call + "], url = [" + url + "]");
-    }
-
-    @Override
     public void requestBodyEnd(@NotNull Call call, long byteCount) {
         Log.d(TAG, "requestBodyEnd: call = [" + call + "], byteCount = [" + byteCount + "]");
     }
@@ -117,10 +89,6 @@ public class HttpEventListener extends EventListener {
         Log.d(TAG, "requestBodyStart: call = [" + call + "]");
     }
 
-    @Override
-    public void requestFailed(@NotNull Call call, @NotNull IOException ioe) {
-        Log.d(TAG, "requestFailed: call = [" + call + "], ioe = [" + ioe + "]");
-    }
 
     @Override
     public void requestHeadersEnd(@NotNull Call call, @NotNull Request request) {
@@ -142,10 +110,6 @@ public class HttpEventListener extends EventListener {
         Log.d(TAG, "responseBodyStart: call = [" + call + "]");
     }
 
-    @Override
-    public void responseFailed(@NotNull Call call, @NotNull IOException ioe) {
-        Log.d(TAG, "responseFailed: call = [" + call + "], ioe = [" + ioe + "]");
-    }
 
     @Override
     public void responseHeadersEnd(@NotNull Call call, @NotNull Response response) {
@@ -155,11 +119,6 @@ public class HttpEventListener extends EventListener {
     @Override
     public void responseHeadersStart(@NotNull Call call) {
         Log.d(TAG, "responseHeadersStart: call = [" + call + "]");
-    }
-
-    @Override
-    public void satisfactionFailure(@NotNull Call call, @NotNull Response response) {
-        Log.d(TAG, "satisfactionFailure: call = [" + call + "], response = [" + response + "]");
     }
 
     @Override
