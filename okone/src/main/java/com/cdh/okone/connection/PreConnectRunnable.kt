@@ -4,11 +4,12 @@ import com.cdh.okone.connection.callback.PreConnectCallback
 import com.cdh.okone.util.LogUtils
 import com.cdh.okone.util.LogUtils.d
 import okhttp3.*
+import okhttp3.EventListener
+import okhttp3.internal.Internal
 import okhttp3.internal.connection.RealConnection
-import okhttp3.internal.connection.RealConnectionPool
 import okhttp3.internal.connection.RouteSelector
 import java.io.IOException
-import java.util.concurrent.ConcurrentLinkedQueue
+import java.util.*
 import javax.net.ssl.HostnameVerifier
 import javax.net.ssl.SSLSocketFactory
 
@@ -45,14 +46,14 @@ class PreConnectRunnable(
                 return
             }
 
-            val realConnectionPool = findRealConnectionPool(mClient)
-            if (hasPooledConnection(realConnectionPool, address, routes, false)) {
+            val connectionPool = findRealConnectionPool(mClient)
+            if (hasPooledConnection(connectionPool, address, routes, false)) {
                 callConnectFailed(mPreConnectCallback, IllegalStateException("There is already a connection with the same address.[1]"))
                 return
             }
 
             val route = routes[0]
-            val connection = RealConnection(realConnectionPool, route)
+            val connection = RealConnection(connectionPool, route)
             // 开始连接，如果失败，内部将抛异常
             connection.connect(
                     mClient.connectTimeoutMillis(),
@@ -63,9 +64,9 @@ class PreConnectRunnable(
                     BuildConnectionProcessor.NONE_CALL,
                     EventListener.NONE
             )
-            mClient.routeDatabase.connected(connection.route())
+            Internal.instance.routeDatabase(mClient.connectionPool()).connected(connection.route())
 
-            if (hasPooledConnection(realConnectionPool, address, routes, true)) {
+            if (hasPooledConnection(connectionPool, address, routes, true)) {
                 try {
                     connection.socket().close()
                 } catch (t: Throwable) {
@@ -74,7 +75,9 @@ class PreConnectRunnable(
                 return
             }
 
-            synchronized(connection) { realConnectionPool.put(connection) }
+            synchronized(connectionPool) {
+                Internal.instance.put(connectionPool, connection)
+            }
 
             callConnectCompleted(mPreConnectCallback, mUrl)
         } catch (t: Throwable) {
@@ -124,19 +127,24 @@ class PreConnectRunnable(
 
         @Throws(IOException::class)
         private fun selectRoutes(client: OkHttpClient, address: Address): List<Route>? {
-            val routeSelector = RouteSelector(address, client.routeDatabase, BuildConnectionProcessor.NONE_CALL, EventListener.NONE)
+            val routeSelector = RouteSelector(address, Internal.instance.routeDatabase(client.connectionPool()), BuildConnectionProcessor.NONE_CALL, EventListener.NONE)
             val selection = if (routeSelector.hasNext()) routeSelector.next() else null
-            return selection?.routes
+//            return selection?.routes
+            val field = selection?.javaClass?.getDeclaredField("routes")
+            field?.isAccessible = true
+            return selection?.let {
+                field?.get(it) as? List<Route>
+            }
         }
 
         /**
          * 检查是否已经有缓存的相同地址的连接
          */
-        private fun hasPooledConnection(realConnectionPool: RealConnectionPool, address: Address, routes: List<Route>, requireMultiplexed: Boolean): Boolean {
+        private fun hasPooledConnection(realConnectionPool: ConnectionPool, address: Address, routes: List<Route>, requireMultiplexed: Boolean): Boolean {
             return try {
                 val connectionsField = realConnectionPool.javaClass.getDeclaredField("connections")
                 connectionsField.isAccessible = true
-                val connections = connectionsField[realConnectionPool] as ConcurrentLinkedQueue<RealConnection>
+                val connections = connectionsField[realConnectionPool] as Deque<RealConnection>
 
                 // 遍历现存connection
                 for (connection in connections) {
@@ -144,18 +152,27 @@ class PreConnectRunnable(
                         var dup = true
 
                         if (requireMultiplexed) {
-                            val isMultiplexed = connection.javaClass.getDeclaredMethod("isMultiplexed\$okhttp")
-                            isMultiplexed.isAccessible = true
-                            val value = isMultiplexed.invoke(connection) as Boolean
+//                            val isMultiplexed = connection.javaClass.getDeclaredMethod("isMultiplexed\$okhttp")
+//                            isMultiplexed.isAccessible = true
+//                            val value = isMultiplexed.invoke(connection) as Boolean
+                            val value = connection.isMultiplexed
                             if (!value) {
                                 dup = false
                             }
                         }
 
                         if (dup) {
-                            val isEligible = connection.javaClass.getDeclaredMethod("isEligible\$okhttp", Address::class.java, MutableList::class.java)
-                            isEligible.isAccessible = true
-                            val result = isEligible.invoke(connection, address, routes) as Boolean
+//                            val isEligible = connection.javaClass.getDeclaredMethod("isEligible\$okhttp", Address::class.java, MutableList::class.java)
+//                            isEligible.isAccessible = true
+//                            val result = isEligible.invoke(connection, address, routes) as Boolean
+                            var result = false
+                            routes.forEach {
+                                if (connection.isEligible(address, it)) {
+                                    result = true
+                                    return@forEach
+                                }
+                            }
+//                            val result = connection.isEligible(address, routes)
                             if (!result) {
                                 dup = false
                             }
@@ -174,11 +191,13 @@ class PreConnectRunnable(
             }
         }
 
+
         @Throws(NoSuchFieldException::class, IllegalAccessException::class)
-        private fun findRealConnectionPool(client: OkHttpClient): RealConnectionPool {
-            val delegateField = client.connectionPool().javaClass.getDeclaredField("delegate")
-            delegateField.isAccessible = true
-            return delegateField[client.connectionPool()] as RealConnectionPool
+        private fun findRealConnectionPool(client: OkHttpClient): ConnectionPool {
+//            val delegateField = client.connectionPool().javaClass.getDeclaredField("delegate")
+//            delegateField.isAccessible = true
+//            return delegateField[client.connectionPool()] as RealConnectionPool
+            return client.connectionPool()
         }
 
         private fun callConnectCompleted(callback: PreConnectCallback?, url: String) {

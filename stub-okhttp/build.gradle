@@ -25,6 +25,6 @@ android {
 }
 
 dependencies {
-    compileOnly "com.squareup.okio:okio:$okioVersion"
-    compileOnly "com.squareup.okhttp3:okhttp:$okhttpVersion"
+    api "com.squareup.okio:okio:$okioVersion"
+    api "com.squareup.okhttp3:okhttp:$okhttpVersion"
 }
