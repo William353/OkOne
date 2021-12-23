@@ -17,7 +17,7 @@
         android:layout_width="match_parent"
         android:layout_height="45dp"
         android:layout_marginTop="5dp"
-        android:text="请求stackoverflow"
+        android:text="请求"
         android:textAllCaps="false" />
 
 
@@ -38,28 +38,19 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:text="预建连-stackoverflow"
+            android:text="预建连-反射"
             android:textAllCaps="false"
             android:textSize="11dp" />
 
         <Button
-            android:id="@+id/btn_pre_connect_juejin"
+            android:id="@+id/btn_pre_connect_head"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_marginLeft="2dp"
             android:layout_weight="1"
-            android:text="预建连-juejin"
+            android:text="预建连-head"
             android:textAllCaps="false"
             android:textSize="11dp" />
 
-        <Button
-            android:id="@+id/btn_pre_connect_zhihu"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_marginLeft="2dp"
-            android:layout_weight="1"
-            android:text="预建连-zhihu"
-            android:textAllCaps="false"
-            android:textSize="11dp" />
     </LinearLayout>
 </LinearLayout>
