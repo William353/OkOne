@@ -11,8 +11,8 @@ interface GitHubService {
     @GET("/search/users")
     fun listRepos(@Query("q") user: String?): Call<SearchData?>?
 
-    @HEAD("/search/users")
-    fun preConnect(@Query("q") user: String?): Call<Void>?
+    @HEAD("a")
+    fun preConnect(): Call<Void>?
 
 
 }

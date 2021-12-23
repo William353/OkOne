@@ -71,7 +71,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
     private fun testPreConnectionHead() {
         Log.d(TAG, "开始请求 预连接 -------")
         val service = retrofit.create(GitHubService::class.java)
-        service.preConnect("william353")?.enqueue(object : retrofit2.Callback<Void> {
+        service.preConnect()?.enqueue(object : retrofit2.Callback<Void> {
 
             override fun onResponse(call: retrofit2.Call<Void>?, response: retrofit2.Response<Void>?) {
                 Log.d(TAG, "预连接 success :${response?.headers()}")
@@ -103,8 +103,5 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
 
     companion object {
         private const val TAG = "MainActivityTag"
-        private const val URL_FOR_TEST = "https://stackoverflow.com/"
-        private const val URL_JUEJIN = "https://juejin.cn/"
-        private const val URL_ZHIHU = "https://www.zhihu.com/"
     }
 }
