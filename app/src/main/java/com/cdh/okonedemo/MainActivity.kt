@@ -6,10 +6,13 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.cdh.okone.OkOne
 import com.cdh.okone.connection.callback.PreConnectCallback
+import com.cdh.okonedemo.http.GitHubService
 import okhttp3.*
 import okhttp3.EventListener
 import okhttp3.internal.connection.RealCall
 import okhttp3.logging.HttpLoggingInterceptor
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 import java.io.IOException
 import java.net.InetAddress
 import java.net.InetSocketAddress
@@ -18,6 +21,20 @@ import java.util.*
 import java.util.concurrent.TimeUnit
 
 class MainActivity : AppCompatActivity(), View.OnClickListener {
+
+    private val okHttpClient = OkHttpClient.Builder()
+//            .eventListenerFactory(HttpEventFactory())
+            .addInterceptor(HttpLoggingInterceptor())
+//            .addInterceptor(TestInterceptor())
+//            .connectionPool(ConnectionPool(1, 1, TimeUnit.SECONDS)) //测试用，设置连接的超时时间，1秒后连接会断开，再次发请求，会执行dns步骤
+            .build()
+
+    private val retrofit = Retrofit.Builder()
+            .baseUrl(BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create())
+            .client(okHttpClient)
+            .build()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -51,7 +68,8 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
             R.id.btn_pre_connect_stackoverflow -> testPreBuildConnection(createBuilder3(), URL_FOR_TEST)
             R.id.btn_pre_connect_juejin -> testPreBuildConnection(createBuilder3(), URL_JUEJIN)
             R.id.btn_pre_connect_zhihu -> testPreBuildConnection(createBuilder3(), URL_ZHIHU)
-            R.id.btn_test_priority -> testCallPriority()
+//            R.id.btn_test_priority -> testCallPriority()
+            R.id.btn_test_priority -> testPreConnectionHead()
         }
     }
 
@@ -261,10 +279,26 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         }
     }
 
+    private fun testPreConnectionHead() {
+        val service = retrofit.create(GitHubService::class.java)
+        service.preConnect()?.enqueue(object : retrofit2.Callback<Void> {
+
+            override fun onResponse(call: retrofit2.Call<Void>?, response: retrofit2.Response<Void>?) {
+                Log.d(TAG, "预连接 success :${response?.headers()}")
+            }
+
+            override fun onFailure(call: retrofit2.Call<Void>?, t: Throwable?) {
+                Log.e(TAG, "预连接 fail ${t?.message}")
+            }
+        })
+    }
+
     companion object {
         private const val TAG = "MainActivityTag"
         private const val URL_FOR_TEST = "https://stackoverflow.com/"
         private const val URL_JUEJIN = "https://juejin.cn/"
         private const val URL_ZHIHU = "https://www.zhihu.com/"
+
+        private val BASE_URL = "https://api-acc.zilivideo.com/"
     }
 }
